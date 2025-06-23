@@ -9,23 +9,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Send custom embed to Discord
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        run: |
-          curl -X POST "$DISCORD_WEBHOOK" \
-          -H "Content-Type: application/json" \
-          -d @- <<EOF
-          {
-            "embeds": [
-              {
-                "title": "🚀 New Release: ${{ github.event.release.tag_name }}",
-                "description": "${{ github.event.release.body || 'No changelog provided.' }}",
-                "url": "${{ github.event.release.html_url }}",
-                "color": 16753920,
-                "timestamp": "${{ github.event.release.published_at }}",
-                "footer": {
-                  "text": "${{ github.repository }}"
-                }
-              }
-            ]
+  env:
+    DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+  run: |
+    curl -X POST "$DISCORD_WEBHOOK" \
+    -H "Content-Type: application/json" \
+    -d @- <<EOF
+    {
+      "content": "📢 New release: \`${{ github.event.release.tag_name }}\`",
+      "embeds": [
+        {
+          "title": "🚀 New Release: ${{ github.event.release.tag_name }}",
+          "description": "${{ github.event.release.body || 'No changelog provided.' }}",
+          "url": "${{ github.event.release.html_url }}",
+          "color": 16753920,
+          "timestamp": "${{ github.event.release.published_at }}",
+          "footer": {
+            "text": "${{ github.repository }}"
           }
+        }
+      ]
+    }
