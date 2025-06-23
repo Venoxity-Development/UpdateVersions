@@ -1,0 +1,27 @@
+name: Notify Discord on Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Post to Discord
+      uses: Ilshidur/action-discord@master
+      with:
+        webhook_url: ${{ secrets.DISCORD_WEBHOOK }}
+        message: |
+          {
+            "embeds": [{
+              "title": "📦 New Release: ${{ github.event.release.tag_name }}",
+              "description": "${{ github.event.release.body }}",
+              "url": "${{ github.event.release.html_url }}",
+              "color": 16753920,
+              "timestamp": "${{ github.event.release.published_at }}",
+              "footer": {
+                "text": "Released by ${{ github.actor }}"
+              }
+            }]
+          }
