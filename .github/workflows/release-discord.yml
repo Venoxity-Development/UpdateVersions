@@ -1,27 +1,32 @@
-name: Notify Discord on Release
+name: Notify Discord of New Release
 
 on:
   release:
     types: [published]
 
 jobs:
-  notify:
+  discordNotification:
     runs-on: ubuntu-latest
     steps:
-    - name: Post to Discord
-      uses: Ilshidur/action-discord@master
-      with:
-        webhook_url: ${{ secrets.DISCORD_WEBHOOK }}
-        message: |
-          {
+      - name: Send release info to Discord
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          RELEASE_NAME: ${{ github.event.release.name }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          RELEASE_BODY: ${{ github.event.release.body }}
+          RELEASE_URL: ${{ github.event.release.html_url }}
+          REPO_NAME: ${{ github.repository }}
+        run: |
+          curl -X POST "$DISCORD_WEBHOOK" \
+          -H "Content-Type: application/json" \
+          -d '{
             "embeds": [{
-              "title": "📦 New Release: ${{ github.event.release.tag_name }}",
-              "description": "${{ github.event.release.body }}",
-              "url": "${{ github.event.release.html_url }}",
-              "color": 16753920,
-              "timestamp": "${{ github.event.release.published_at }}",
+              "title": "🚀 New Release: '"$RELEASE_TAG"'",
+              "description": "'"${RELEASE_BODY//\"/\\\"}"'",
+              "url": "'"$RELEASE_URL"'",
+              "color": 5814783,
               "footer": {
-                "text": "Released by ${{ github.actor }}"
+                "text": "'"$REPO_NAME"'"
               }
             }]
-          }
+          }'
