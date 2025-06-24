@@ -20,13 +20,9 @@ jobs:
             "embeds": [
               {
                 "title": "📦 ${{ github.event.release.tag_name }}",
-                "description": "${{ github.event.release.body || 'No changelog provided.' }}",
+                "description": ${{ toJson(github.event.release.body) }},
                 "url": "${{ github.event.release.html_url }}",
-                "color": 16753920,
-                 "timestamp": "${{ github.event.release.published_at }}",
-                "footer": {
-                  "text": "${{ github.repository }}"
-                }
+                "color": 16753920
               }
             ]
           }
