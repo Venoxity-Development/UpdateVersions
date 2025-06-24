@@ -16,13 +16,16 @@ jobs:
           -H "Content-Type: application/json" \
           -d @- <<EOF
           {
-            "content": "<@&1334094196365201440> ${{ github.event.release.tag_name }}",
             "embeds": [
               {
                 "title": "📦 ${{ github.event.release.tag_name }}",
                 "description": ${{ toJson(github.event.release.body) }},
                 "url": "${{ github.event.release.html_url }}",
-                "color": 16753920
+                "color": 16753920,
+                "timestamp": "${{ github.event.release.published_at }}",
+                "footer": {
+                  "text": "Venoxity Network"
+                }
               }
             ]
           }
