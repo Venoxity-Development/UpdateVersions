@@ -16,10 +16,10 @@ jobs:
           -H "Content-Type: application/json" \
           -d @- <<EOF
           {
-            "content": "📢 New release: \`${{ github.event.release.tag_name }}\`",
+            "content": "${{ github.event.release.tag_name }}",
             "embeds": [
               {
-                "title": "🚀 New Release: ${{ github.event.release.tag_name }}",
+                "title": "📦 ${{ github.event.release.tag_name }}",
                 "description": "${{ github.event.release.body || 'No changelog provided.' }}",
                 "url": "${{ github.event.release.html_url }}",
                 "color": 16753920,
