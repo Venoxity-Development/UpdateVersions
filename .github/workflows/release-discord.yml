@@ -21,7 +21,7 @@ jobs:
                 "title": "📦 ${{ github.event.release.tag_name }}",
                 "description": ${{ toJson(github.event.release.body) }},
                 "url": "${{ github.event.release.html_url }}",
-                "color": 16753920,
+                "color": 7624228,
                 "timestamp": "${{ github.event.release.published_at }}",
                 "footer": {
                   "text": "Venoxity Network",
