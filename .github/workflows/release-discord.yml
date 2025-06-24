@@ -25,6 +25,7 @@ jobs:
                 "timestamp": "${{ github.event.release.published_at }}",
                 "footer": {
                   "text": "Venoxity Network"
+                   "icon_url": "https://cdn.discordapp.com/attachments/1368433399978790914/1386875786899750913/VText.png?ex=685b4c3a&is=6859faba&hm=4141466c5761e82f3369a595c10d5268169b0b1c9a6dafd95f9d7401c2f62d60"
                 }
               }
             ]
