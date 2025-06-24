@@ -23,6 +23,10 @@ jobs:
                 "description": "${{ github.event.release.body || 'No changelog provided.' }}",
                 "url": "${{ github.event.release.html_url }}",
                 "color": 16753920,
+                 "timestamp": "${{ github.event.release.published_at }}",
+                "footer": {
+                  "text": "${{ github.repository }}"
+                }
               }
             ]
           }
