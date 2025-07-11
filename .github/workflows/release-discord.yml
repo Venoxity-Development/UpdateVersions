@@ -37,32 +37,32 @@ jobs:
             -H "Content-Type: application/json" \
             -d "$EMBED"
 
-push-docs:
-  needs: notify
-  runs-on: ubuntu-latest
-  steps:
-    - name: Commit release notes to plugin changelog
-      run: |
-        git config --global user.name "GitHub Actions"
-        git config --global user.email "actions@github.com"
+  push-docs:
+    needs: notify
+    runs-on: ubuntu-latest
+    steps:
+      - name: Commit release notes to plugin changelog
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
 
-        git clone https://x-access-token:${{ secrets.GH_PAT }}@github.com/Venoxity-Development/documentation.git
-        cd documentation
+          git clone https://x-access-token:${{ secrets.GH_PAT }}@github.com/Venoxity-Development/documentation.git
+          cd documentation
 
-        FULL_TAG="${{ github.event.release.tag_name }}"
-        PLUGIN_NAME=$(echo "$FULL_TAG" | cut -d'-' -f2)
-        PLUGIN_DIR=$(echo "$PLUGIN_NAME" | tr '[:upper:]' '[:lower:]')
-        RELEASE_VERSION=$(echo "$FULL_TAG" | cut -d'-' -f3)
+          FULL_TAG="${{ github.event.release.tag_name }}"
+          PLUGIN_NAME=$(echo "$FULL_TAG" | cut -d'-' -f2)
+          PLUGIN_DIR=$(echo "$PLUGIN_NAME" | tr '[:upper:]' '[:lower:]')
+          RELEASE_VERSION=$(echo "$FULL_TAG" | cut -d'-' -f3)
 
-        CHANGELOG_PATH="plugins/${PLUGIN_DIR}/changelogs.md"
+          CHANGELOG_PATH="plugins/${PLUGIN_DIR}/changelogs.md"
 
-        if [ ! -f "$CHANGELOG_PATH" ]; then
-          echo "❌ Changelog not found at $CHANGELOG_PATH"
-          exit 1
-        fi
+          if [ ! -f "$CHANGELOG_PATH" ]; then
+            echo "❌ Changelog not found at $CHANGELOG_PATH"
+            exit 1
+          fi
 
-        # Write changelog entry to a temp file to avoid quoting issues
-        cat > changelog-entry.md <<EOF
+          # Write changelog entry to a temporary file to avoid quoting issues
+          cat > changelog-entry.md <<EOF
 
 ---
 
@@ -72,10 +72,10 @@ ${{ github.event.release.body }}
 
 EOF
 
-        # Append to changelog
-        cat changelog-entry.md >> "$CHANGELOG_PATH"
-        rm changelog-entry.md
+          # Append changelog entry and clean up
+          cat changelog-entry.md >> "$CHANGELOG_PATH"
+          rm changelog-entry.md
 
-        git add "$CHANGELOG_PATH"
-        git commit -m "Update changelog for $PLUGIN_NAME $RELEASE_VERSION"
-        git push origin main
+          git add "$CHANGELOG_PATH"
+          git commit -m "Update changelog for $PLUGIN_NAME $RELEASE_VERSION"
+          git push origin main
