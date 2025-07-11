@@ -43,7 +43,7 @@ jobs:
     steps:
       - name: Commit release notes to plugin changelog
         run: |
-          git config --global user.name "GitHub Actions"
+          git config --global user.name "venoxity-ci"
           git config --global user.email "actions@github.com"
 
           git clone https://x-access-token:${{ secrets.GH_PAT }}@github.com/Venoxity-Development/documentation.git
@@ -65,7 +65,7 @@ jobs:
             echo ""
             echo "---"
             echo ""
-            echo "### ${RELEASE_VERSION} - $(date +"%Y-%m-%d")"
+            echo "## ${RELEASE_VERSION}"
             echo ""
             echo "${{ github.event.release.body }}"
           } >> "$CHANGELOG_PATH"
