@@ -61,14 +61,20 @@ jobs:
             exit 1
           fi
 
-          {
-            echo ""
-            echo "---"
-            echo ""
-            echo "## ${RELEASE_VERSION}"
-            echo ""
-            echo "${{ github.event.release.body }}"
-          } >> "$CHANGELOG_PATH"
+          NEW_ENTRY=$(cat <<EOF
+
+---
+
+## ${RELEASE_VERSION}
+
+${{ github.event.release.body }}
+EOF
+)
+
+          TEMP_FILE=$(mktemp)
+          echo "$NEW_ENTRY" > "$TEMP_FILE"
+          cat "$CHANGELOG_PATH" >> "$TEMP_FILE"
+          mv "$TEMP_FILE" "$CHANGELOG_PATH"
 
           git add "$CHANGELOG_PATH"
           git commit -m "Update changelog for $PLUGIN_NAME $RELEASE_VERSION"
