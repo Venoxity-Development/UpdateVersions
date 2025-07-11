@@ -30,8 +30,6 @@ jobs:
               }
             ]
           }
-EOF
-
   push-docs:
     needs: notify
     runs-on: ubuntu-latest
