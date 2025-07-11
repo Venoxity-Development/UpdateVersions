@@ -61,18 +61,14 @@ jobs:
             exit 1
           fi
 
-          cat > changelog-entry.md <<EOF
-
----
-
-### ${RELEASE_VERSION} - $(date +"%Y-%m-%d")
-
-${{ github.event.release.body }}
-
-EOF
-
-          cat changelog-entry.md >> "$CHANGELOG_PATH"
-          rm changelog-entry.md
+          {
+            echo ""
+            echo "---"
+            echo ""
+            echo "### ${RELEASE_VERSION} - $(date +"%Y-%m-%d")"
+            echo ""
+            echo "${{ github.event.release.body }}"
+          } >> "$CHANGELOG_PATH"
 
           git add "$CHANGELOG_PATH"
           git commit -m "Update changelog for $PLUGIN_NAME $RELEASE_VERSION"
