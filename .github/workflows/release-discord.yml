@@ -12,24 +12,31 @@ jobs:
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         run: |
-          curl -X POST "$DISCORD_WEBHOOK" \
-          -H "Content-Type: application/json" \
-          -d @- <<EOF
-          {
-            "embeds": [
-              {
-                "title": "📦 ${{ github.event.release.tag_name }}",
-                "description": ${{ toJson(github.event.release.body) }},
-                "url": "${{ github.event.release.html_url }}",
-                "color": 7679428,
-                "timestamp": "${{ github.event.release.published_at }}",
-                "footer": {
-                  "text": "Venoxity Network",
-                  "icon_url": "https://cdn.discordapp.com/attachments/1368433399978790914/1386875786899750913/VText.png?ex=685b4c3a&is=6859faba&hm=4141466c5761e82f3369a595c10d5268169b0b1c9a6dafd95f9d7401c2f62d60"
+          EMBED=$(jq -n \
+            --arg title "📦 ${{ github.event.release.tag_name }}" \
+            --arg desc "${{ github.event.release.body }}" \
+            --arg url "${{ github.event.release.html_url }}" \
+            --arg timestamp "${{ github.event.release.published_at }}" \
+            '{
+              "embeds": [
+                {
+                  "title": $title,
+                  "description": $desc,
+                  "url": $url,
+                  "color": 7679428,
+                  "timestamp": $timestamp,
+                  "footer": {
+                    "text": "Venoxity Network",
+                    "icon_url": "https://cdn.discordapp.com/attachments/1368433399978790914/1386875786899750913/VText.png?ex=685b4c3a&is=6859faba&hm=4141466c5761e82f3369a595c10d5268169b0b1c9a6dafd95f9d7401c2f62d60"
+                  }
                 }
-              }
-            ]
-          }
+              ]
+            }')
+
+          curl -X POST "$DISCORD_WEBHOOK" \
+            -H "Content-Type: application/json" \
+            -d "$EMBED"
+
   push-docs:
     needs: notify
     runs-on: ubuntu-latest
