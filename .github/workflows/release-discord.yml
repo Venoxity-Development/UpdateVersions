@@ -45,6 +45,7 @@ EOF
           cd documentation
 
           echo "Release: ${{ github.event.release.tag_name }} — $(date)" >> release-log.txt
+
           git add release-log.txt
           git commit -m "Documented release ${{ github.event.release.tag_name }}"
           git push origin main
