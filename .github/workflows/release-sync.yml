@@ -61,15 +61,13 @@ jobs:
             exit 1
           fi
 
-          # Separate frontmatter and content
+          # Separate frontmatter and rest
           FRONTMATTER_END=$(grep -n '^---$' "$CHANGELOG_PATH" | awk 'NR==2 {print $1}' | cut -d: -f1)
           head -n "$FRONTMATTER_END" "$CHANGELOG_PATH" > top.md
           tail -n +"$((FRONTMATTER_END + 1))" "$CHANGELOG_PATH" > body.md
 
-          # Build new entry
+          # Build the new changelog entry (NO extra '---')
           {
-            echo ""
-            echo "---"
             echo ""
             echo "## ${RELEASE_VERSION}"
             echo ""
@@ -77,10 +75,10 @@ jobs:
             echo ""
           } > new-entry.md
 
-          # Combine: frontmatter + new entry + old content
+          # Combine all parts
           cat top.md new-entry.md body.md > "$CHANGELOG_PATH"
 
-          # Clean up
+          # Cleanup
           rm top.md new-entry.md body.md
 
           git add "$CHANGELOG_PATH"
