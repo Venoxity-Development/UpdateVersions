@@ -61,19 +61,27 @@ jobs:
             exit 1
           fi
 
-          # Build new changelog entry using echo
-          TEMP_FILE=$(mktemp)
-          echo "" >> "$TEMP_FILE"
-          echo "---" >> "$TEMP_FILE"
-          echo "" >> "$TEMP_FILE"
-          echo "## ${RELEASE_VERSION}" >> "$TEMP_FILE"
-          echo "" >> "$TEMP_FILE"
-          echo "${{ github.event.release.body }}" >> "$TEMP_FILE"
-          echo "" >> "$TEMP_FILE"
+          # Separate frontmatter and content
+          FRONTMATTER_END=$(grep -n '^---$' "$CHANGELOG_PATH" | awk 'NR==2 {print $1}' | cut -d: -f1)
+          head -n "$FRONTMATTER_END" "$CHANGELOG_PATH" > top.md
+          tail -n +"$((FRONTMATTER_END + 1))" "$CHANGELOG_PATH" > body.md
 
-          # Append original changelog after the new entry
-          cat "$CHANGELOG_PATH" >> "$TEMP_FILE"
-          mv "$TEMP_FILE" "$CHANGELOG_PATH"
+          # Build new entry
+          {
+            echo ""
+            echo "---"
+            echo ""
+            echo "## ${RELEASE_VERSION}"
+            echo ""
+            echo "${{ github.event.release.body }}"
+            echo ""
+          } > new-entry.md
+
+          # Combine: frontmatter + new entry + old content
+          cat top.md new-entry.md body.md > "$CHANGELOG_PATH"
+
+          # Clean up
+          rm top.md new-entry.md body.md
 
           git add "$CHANGELOG_PATH"
           git commit -m "Update changelog for $PLUGIN_NAME $RELEASE_VERSION"
