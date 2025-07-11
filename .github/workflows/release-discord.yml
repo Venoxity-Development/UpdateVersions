@@ -61,7 +61,6 @@ jobs:
             exit 1
           fi
 
-          # Write changelog entry to a temporary file to avoid quoting issues
           cat > changelog-entry.md <<EOF
 
 ---
@@ -72,7 +71,6 @@ ${{ github.event.release.body }}
 
 EOF
 
-          # Append changelog entry and clean up
           cat changelog-entry.md >> "$CHANGELOG_PATH"
           rm changelog-entry.md
 
