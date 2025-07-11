@@ -61,18 +61,17 @@ jobs:
             exit 1
           fi
 
-          NEW_ENTRY=$(cat <<EOF
-
----
-
-## ${RELEASE_VERSION}
-
-${{ github.event.release.body }}
-EOF
-)
-
+          # Build new changelog entry using echo
           TEMP_FILE=$(mktemp)
-          echo "$NEW_ENTRY" > "$TEMP_FILE"
+          echo "" >> "$TEMP_FILE"
+          echo "---" >> "$TEMP_FILE"
+          echo "" >> "$TEMP_FILE"
+          echo "## ${RELEASE_VERSION}" >> "$TEMP_FILE"
+          echo "" >> "$TEMP_FILE"
+          echo "${{ github.event.release.body }}" >> "$TEMP_FILE"
+          echo "" >> "$TEMP_FILE"
+
+          # Append original changelog after the new entry
           cat "$CHANGELOG_PATH" >> "$TEMP_FILE"
           mv "$TEMP_FILE" "$CHANGELOG_PATH"
 
